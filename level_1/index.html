@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1</title>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        h4 {
+            color: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ToDo List</h1>
+    <br />
+
+    <div>
+        <input type="text" id="txtTugas" />
+        <button id="btnTambah">Tambah</button>
+    </div>
+
+    <h4>Ian Sample</h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tugas</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="listTugas">
+
+        </tbody>
+    </table>
+
+    <h5>Total tugas belum selesai : <span id="totalBelum">0</span></h5>
+
+    <div>
+        <button onclick="setSelesai()">Tandai Semua Selesai</button>
+        <button onclick="hapus()">Hapus Semua</button>
+    </div>
+
+    <script>
+        const txtTugas = document.getElementById('txtTugas')
+        const btnTambah = document.getElementById('btnTambah')
+        const listTugas = document.getElementById('listTugas')
+        const totalBelum = document.getElementById('totalBelum')
+        const status = document.getElementsByClassName('status')
+
+        // get data jumalh tugas yg belum dikerjakan
+        const getStatusCount = () => {
+            const countUnchecked = [].filter.call(status, checkbox => !checkbox.checked).length
+            totalBelum.innerHTML = countUnchecked
+            if (status.length > 0 && countUnchecked == 0) {
+                setTimeout(() => alert('Tugas telah selesai semuanya..!!'), 500)
+            }
+        }
+
+        // set semua tugas ke sudah dikerjakan
+        const setSelesai = () => {
+            for (let i = 0; i < status.length; i++) {
+                const checkbox = status[i];
+                checkbox.checked = true
+            }
+            getStatusCount()
+        }
+
+        // hapus tugas (jika ada parameter index akan menghapus 1 tugas berdasarkan indexnya, jika tidak ada akan menghapus semua tugas)
+        const hapus = (index = null) => {
+            if (confirm(`Hapus${!index ? ' semua' : ''} tugas?`)) {
+                if (index) {
+                    listTugas.children[index].remove()
+                } else {
+                    listTugas.innerHTML = ""
+                    setTimeout(() => alert('Semua tugas berhasil di hapus..!!'), 500)
+                }
+                getStatusCount()
+            }
+        }
+
+        // handle button tambah tugas
+        btnTambah.onclick = () => {
+            if (txtTugas.value == "") {
+                alert("Masukkan tugas dulu!")
+            } else {
+                listTugas.innerHTML += `
+                    <tr>
+                        <td>${txtTugas.value}</td>
+                        <td>
+                            <input type="checkbox" class="status" onchange="getStatusCount()" />
+                        </td>
+                        <td>
+                            <button onclick="hapus(${listTugas.children.length})">Hapus</button>
+                        </td>
+                    </tr>
+                `
+                txtTugas.value = ""
+                getStatusCount()
+            }
+        }
+    </script>
+</body>
+
+</html>
