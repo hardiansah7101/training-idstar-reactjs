@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<!--     
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        h4 {
+            color: darkgreen;
+        }
+    </style> -->
+</head>
+
+<body>
+    <div class="container my-4">
+        <h1>Task Manager</h1>
+        <br />
+        <label for="txtTugas">Tambah Tugas Baru</label>
+        <div>
+            <input type="text" class="form-control" id="txtTugas" />
+            <button class="btn btn-primary mt-2 mb-2" id="btnTambah">Tambah</button>
+        </div>
+    
+        <h4 class="mt-4">Daftar Tugas</h4>
+    
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Tugas</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-end" style="width: 100px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="listTugas">
+    
+            </tbody>
+        </table>
+    
+        <h5 class="my-4">Total tugas belum selesai : <span id="totalBelum">0</span></h5>
+    
+        <div class="d-flex justify-content-start">
+            <button class="btn btn-success m-1" onclick="setSelesai()">Tandai Semua Selesai</button>
+            <button class="btn btn-danger m-1" onclick="hapus()">Hapus Semua Tugas</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script>
+        const txtTugas = document.getElementById('txtTugas')
+        const btnTambah = document.getElementById('btnTambah')
+        const listTugas = document.getElementById('listTugas')
+        const totalBelum = document.getElementById('totalBelum')
+        const status = document.getElementsByClassName('status')
+
+        // get data jumalh tugas yg belum dikerjakan
+        const getStatusCount = () => {
+            const countUnchecked = [].filter.call(status, checkbox => !checkbox.checked).length
+            totalBelum.innerHTML = countUnchecked
+            if (status.length > 0 && countUnchecked == 0) {
+                setTimeout(() => alert('Tugas telah selesai semuanya..!!'), 500)
+            }
+        }
+
+        // set semua tugas ke sudah dikerjakan
+        const setSelesai = () => {
+            for (let i = 0; i < status.length; i++) {
+                const checkbox = status[i];
+                checkbox.checked = true
+            }
+            getStatusCount()
+        }
+
+        // hapus tugas (jika ada parameter index akan menghapus 1 tugas berdasarkan indexnya, jika tidak ada akan menghapus semua tugas)
+        const hapus = (index = null) => {
+            if (confirm(`Hapus${!index ? ' semua' : ''} tugas?`)) {
+                if (index) {
+                    listTugas.children[index].remove()
+                } else {
+                    listTugas.innerHTML = ""
+                    setTimeout(() => alert('Semua tugas berhasil di hapus..!!'), 500)
+                }
+                getStatusCount()
+            }
+        }
+
+        // handle button tambah tugas
+        btnTambah.onclick = () => {
+            if (txtTugas.value == "") {
+                alert("Masukkan tugas dulu!")
+            } else {
+                listTugas.innerHTML += `
+                    <tr>
+                        <td>${txtTugas.value}</td>
+                        <td>
+                            <input type="checkbox" class="status form-check-input" onchange="getStatusCount()" />
+                            <label class="form-check-label">
+                                Selesai
+                            </label>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-danger btn-sm" onclick="hapus(${listTugas.children.length})">Hapus</button>
+                        </td>
+                    </tr>
+                `
+                txtTugas.value = ""
+                getStatusCount()
+            }
+        }
+    </script>
+</body>
+
+</html>
